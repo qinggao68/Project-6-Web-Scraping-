@@ -1,0 +1,62 @@
+---
+title: "Top 50 Car Wash Chains in the U.S."
+author: "Christina Gao"
+date: "5/9/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+# Load library 
+library(rvest)
+library(dplyr)
+library(xml2)
+library(stringr) # to deal with strings and to clean up our data
+```
+
+
+```{r}
+# Set url
+link <- "https://www.carwash.com/top-50-u-s-conveyor-chain-list/"
+
+# Scrap 50 Car Wash Chains
+
+# Grab the names 
+Car_Wash_Names <- read_html(link) %>%
+      html_nodes('td:nth-child(2) , .mvp-blur h2') %>%
+      html_text()
+Car_Wash_Names
+
+# Grab the HQ City
+City <- read_html(link) %>%
+      html_nodes('td:nth-child(3) , h2+ h4 , .wp-block-group+ h4') %>%
+      html_text()
+City
+
+# Grab the HQ State
+State <- read_html(link) %>%
+      html_nodes('td:nth-child(4) , h2+ h4 , .wp-block-group+ h4') %>%
+      html_text()
+State
+
+# Grab the #s of locations
+Nums_Of_Locations <- read_html(link) %>%
+      html_nodes('td:nth-child(6) , h4:nth-child(29) ,
+                 h4:nth-child(23) , h4:nth-child(5) , h4:nth-child(17) , h4:nth-child(11)') %>%
+      html_text()
+Nums_Of_Locations
+
+# Grab the website
+Website <- read_html(link) %>% 
+      html_nodes('h4:nth-child(4), h4:nth-child(10), h4:nth-child(16), 
+                 h4:nth-child(22), h4:nth-child(28), td:nth-child(5)') %>%
+      html_text()
+Website
+
+# Create a df and saved in car_df
+car_df <- data.frame(Car_Wash_Names, City, State, Nums_Of_Locations, Website)
+car_df
+
+# write it to csv 
+write.csv(car_df, "D:\\Projects\\top50_car_wash_chains.csv")
+```
+
